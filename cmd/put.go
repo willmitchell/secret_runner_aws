@@ -43,7 +43,7 @@ var putCmd = &cobra.Command{
 		}
 
 		pi := ssm.PutParameterInput{
-			Name:      aws.String(param_name),
+			Name:      aws.String(buildParamName(param_name)),
 			Value:     aws.String(param_value),
 			Type:      aws.String(ev),
 			Overwrite: aws.Bool(true),

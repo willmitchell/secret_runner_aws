@@ -31,21 +31,33 @@ var listCmd = &cobra.Command{
 		sess := buildSession()
 
 		// Create S3 service client
+
+		cpp := getCurrentParamPath()
+		fmt.Println(fmt.Sprintf("Current path: %v", cpp))
+		values := []*string{aws.String(cpp)}
+
+		pf := ssm.ParameterStringFilter{
+			Key:    aws.String("Name"),
+			Values: values,
+			Option: aws.String("BeginsWith"),
+		}
+
+		filters := []*ssm.ParameterStringFilter{&pf}
+
 		svc := ssm.New(sess);
-		o, err := svc.DescribeParameters(&ssm.DescribeParametersInput{})
+		o, err := svc.DescribeParameters(&ssm.DescribeParametersInput{
+			ParameterFilters: filters,
+		})
+		print(o.GoString())
 		if (err != nil) {
+			fmt.Println(err)
 			panic("Unable to describe parameters")
 		}
-		//print(o.GoString())
 
 		params := o.Parameters
 		for i := 0; i < len(params); i++ {
 			println(aws.StringValue(params[i].Name))
 		}
-		println(module)
-		println(stage)
-		println(buildParamName(prefix,module,stage,"hello"))
-
 	},
 }
 

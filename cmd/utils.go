@@ -33,7 +33,12 @@ func buildModuleStageName(prefix string, module string, stage string) string {
 	return streamline(s)
 }
 
-func buildParamName(prefix string, module string, stage string, param string) string {
+func getCurrentParamPath() string {
+	//return fmt.Sprintf("%v/*",buildModuleStageName(prefix, module, stage))
+	return buildModuleStageName(prefix, module, stage)
+}
+
+func buildParamName(param string) string {
 	s := fmt.Sprintf("%s/%s", buildModuleStageName(prefix, module, stage), param)
 	return streamline(s)
 }
