@@ -1,0 +1,44 @@
+image: golang:1.10
+
+stages:
+  - build
+  - test
+  - deploy
+
+before_script:
+  - go version
+  - echo $CI_BUILD_REF
+  - echo $CI_PROJECT_DIR
+  - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+  - mkdir -p /go/src/gitlab.com/willmitchell
+  - cp -rv /builds/willmitchell/ssm_executor /go/src/gitlab.com/willmitchell/
+  - cd /go/src/gitlab.com/willmitchell/ssm_executor
+
+build:
+  stage: build
+  script:
+    - dep ensure
+    - go build
+
+test:
+  stage: test
+  script:
+    - dep ensure
+    - go test -v -cover ./...
+
+deploy:
+  stage: deploy
+  script:
+    - mkdir -p $CI_PROJECT_DIR/binaries
+    - dep ensure
+    - echo Building for Windows
+    - GOOS=windows GOARCH=amd64 go build -o $CI_PROJECT_DIR/binaries/ssm_executor_windows.exe
+    - echo Building for Linux
+    - GOOS=linux GOARCH=amd64 go build -o $CI_PROJECT_DIR/binaries/ssm_executor_linux
+    - echo Building for Mac
+    - GOOS=darwin GOARCH=amd64 go build -o $CI_PROJECT_DIR/binaries/ssm_executor_mac
+  artifacts:
+    paths:
+      - binaries/ssm_executor-windows.exe
+      - binaries/ssm_executor-linux
+      - binaries/ssm_executor-mac
