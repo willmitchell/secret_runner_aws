@@ -1,5 +1,9 @@
 # ssm_executor: Secure secret delivery to arbitrary programs using AWS SSM Parameter Store and KMS
 
+[![pipeline status](https://gitlab.com/willmitchell/ssm_executor/badges/master/pipeline.svg)](https://gitlab.com/willmitchell/ssm_executor/commits/master)
+[![coverage report](https://gitlab.com/willmitchell/ssm_executor/badges/master/coverage.svg)](https://gitlab.com/willmitchell/ssm_executor/commits/master)
+
+
 You can use this tool to manage and load secrets for other programs that you run.
 This program pulls secrets from SSM, which can encrypt secrets using the AWS KMS.
 Secrets are pulled from KMS based on a parameter naming convention:

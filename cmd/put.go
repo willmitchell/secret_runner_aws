@@ -18,27 +18,55 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"github.com/aws/aws-sdk-go/service/ssm"
+	"github.com/aws/aws-sdk-go/aws"
 )
+
+var encrypt = false
+var param_name = ""
+var param_value = ""
 
 // putCmd represents the put command
 var putCmd = &cobra.Command{
 	Use:   "put",
 	Short: "put secrets into SSM",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("put called")
+		fmt.Println(fmt.Sprintf("put called.  name: %s, value: %s, encrypt: %t", param_name, param_value, encrypt))
+
+		sess := buildSession()
+
+		// Create S3 service client
+		svc := ssm.New(sess);
+		ev := "String"
+		if (encrypt) {
+			ev = "SecureString"
+		}
+
+		pi := ssm.PutParameterInput{
+			Name:      aws.String(param_name),
+			Value:     aws.String(param_value),
+			Type:      aws.String(ev),
+			Overwrite: aws.Bool(true),
+		}
+
+		o, err := svc.PutParameter(&pi)
+		fmt.Println(o.GoString())
+		if (err != nil) {
+			panic("Failed to put parameter.")
+		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(putCmd)
 
-	// Here you will define your flags and configuration settings.
+	putCmd.Flags().BoolVarP(&encrypt, "encrypt", "e", true, "Encrypt?  true/false.")
+	const PARAM_NAME = "param_name"
+	putCmd.Flags().StringVarP(&param_name, PARAM_NAME, "n", "", "The name of the parameter")
+	putCmd.MarkFlagRequired(PARAM_NAME)
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// putCmd.PersistentFlags().String("foo", "", "A help for foo")
+	const PARAM_VALUE = "param_value"
+	putCmd.Flags().StringVarP(&param_value, PARAM_VALUE, "v", "", "The value of the parameter")
+	putCmd.MarkFlagRequired(PARAM_VALUE)
 
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// putCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
