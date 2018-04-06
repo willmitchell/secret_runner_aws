@@ -24,12 +24,16 @@ func buildSession() (*session.Session) {
 //	return re.ReplaceAllString(s, `$1.$2`)
 //}
 
+func streamline(s string) string {
+	return strings.Replace(s, "//", "/", -1)
+}
+
 func buildModuleStageName(prefix string, module string, stage string) string {
-	s := fmt.Sprintf("%s-%s-%s", prefix, module, stage)
-	return strings.Replace(s, "--", "-", -1)
+	s := fmt.Sprintf("/%s/%s/%s", prefix, module, stage)
+	return streamline(s)
 }
 
 func buildParamName(prefix string, module string, stage string, param string) string {
-	s := fmt.Sprintf("%s-%s", buildModuleStageName(prefix, module, stage), param)
-	return strings.Replace(s, "--", "-", -1)
+	s := fmt.Sprintf("%s/%s", buildModuleStageName(prefix, module, stage), param)
+	return streamline(s)
 }
