@@ -39,6 +39,6 @@ deploy:
     - GOOS=darwin GOARCH=amd64 go build -o $CI_PROJECT_DIR/binaries/ssm_executor_mac
   artifacts:
     paths:
-      - binaries/ssm_executor-windows.exe
-      - binaries/ssm_executor-linux
-      - binaries/ssm_executor-mac
+      - binaries/ssm_executor_windows.exe
+      - binaries/ssm_executor_linux
+      - binaries/ssm_executor_mac
