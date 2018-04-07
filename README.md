@@ -5,26 +5,29 @@
 
 [Download](https://gitlab.com/willmitchell/formflow/-/jobs/artifacts/master/browse?job=deploy)
 
-You can use this tool to manage secrets and to run your own programs in a secure manner on AWS.  This program manages secrets within
-AWS SSM Parameter Store, which encrypts secrets using KMS.
+You can use this tool to manage secrets and to deliver them to your own programs as environment variables.  The tool is designed 
+to follow best practices with regards to secrets handling on AWS.  Secrets are managed within AWS SSM Parameter Store, which 
+encrypts secrets using keys that are managed by AWS KMS.
 
-Parameter naming convention:
+secret_runner_aws manages both secrets and regular string parameters.  The only difference between the two is that secrets
+are encrypted using the -e flag.  secret_runner_aws supports put, get, list, and delete operations (CRUD, basically) on secrets.
+
+All parameters managed by this tool follow a naming convention as described below:
 
  /prefix/module/stage/param_name
  
 where:
 
-- prefix: your company name. Example: com-example
-- module: name of your module. Example: appserver
-- stage: name of your runtime environment or stage.  Example: prod
-- param_name: name of a specific parameter.  Example: db_pass
+| option       | description                              | required? | example     |
+|--------------|------------------------------------------|-----------|-------------|
+| --prefix     | something like your organization name    | no        | com-example |
+| --module     | name of your software module             | no        | appserver   |
+| --stage      | name of stage (aka environment)          | no        | prod        |
+| --param_name | the actual name of a parameter or secret | yes       | db_pass     |
  
-secret_runner_aws will pull all secrets matching the path defined by /prefix/module/stage/* and then decrypt as required.
-All resulting params will be transformed into environment variables that are then passed to your program.  This way,
-your program can have access to secrets without resorting to insecure hacks!
-
-secret_runner_aws also includes support for creating, updating, and reading the secrets that you want SSM to manage on your
-behalf.
+At runtime, secret_runner_aws will pull all secrets matching the path defined by /prefix/module/stage/ and then decrypt 
+as required.  All resulting params will be transformed into environment variables (upper cased and s/-/_/g;) that are 
+then passed to your program.  This way, your program can have access to secrets without resorting to insecure hacks!
 
 # Dependencies
 
@@ -62,7 +65,7 @@ This program helps you use AWS SSM Parameter Store to manage your parameters and
 encrypted using master keys that are managed by AWS KMS.  The tool provides CRUD operations for params 
 and secrets, and it relies on a naming convention that maps onto existing AWS SSM PS IAM role management 
 facilities.  You can also use this program to run *your* program in a secure manner using the 'run' command.
-The run command exposes all appropriate secrets as environment variables and then execs your program.
+The run command exposes all appropriate secrets as environment variables and then execs your program.  
 
 Disclaimer:   Provided without warranty of any kind.  Use at your own risk.  
 Bug reports:  https://gitlab.com/willmitchell/secret_runner_aws/issues
@@ -72,20 +75,21 @@ Usage:
   secret_runner_aws [command]
 
 Available Commands:
-  run        Run your program with secrets exposed as env vars.
+  delete      delete secrets from SSM
   get         Get secrets from SSM
   help        Help about any command
   list        list secrets for this prefix/module/stage
   put         put secrets into SSM
+  run         Run your program with secrets exposed as env vars.
 
 Flags:
   -h, --help            help for secret_runner_aws
   -m, --module string   Module name
   -p, --prefix string   prefix name
+  -r, --region string   AWS region name (us-east-1) (default "us-east-1")
   -s, --stage string    Stage name
 
 Use "secret_runner_aws [command] --help" for more information about a command.
-
 ```
 
 # Examples
