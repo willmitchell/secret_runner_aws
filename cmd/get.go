@@ -22,51 +22,39 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 )
 
-var encrypt = false
-var param_name = ""
-var param_value = ""
-
-// putCmd represents the put command
-var putCmd = &cobra.Command{
-	Use:   "put",
-	Short: "put secrets into SSM",
+// getCmd represents the put command
+var getCmd = &cobra.Command{
+	Use:   "get",
+	Short: "Get secrets from SSM",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(fmt.Sprintf("put called.  name: %s, value: %s, encrypt: %t", param_name, param_value, encrypt))
+		fmt.Println(fmt.Sprintf("get called.  name: %s, value: %st", param_name, param_value, ))
 
 		sess := buildSession()
 
 		// Create S3 service client
 		svc := ssm.New(sess);
-		ev := "String"
-		if (encrypt) {
-			ev = "SecureString"
-		}
 
-		pi := ssm.PutParameterInput{
+		pi := ssm.GetParameterInput{
 			Name:      aws.String(buildParamName(param_name)),
-			Value:     aws.String(param_value),
-			Type:      aws.String(ev),
-			Overwrite: aws.Bool(true),
+			WithDecryption: aws.Bool(true),
 		}
 
-		o, err := svc.PutParameter(&pi)
+		o, err := svc.GetParameter(&pi)
 		fmt.Println(o.GoString())
 		if (err != nil) {
-			panic("Failed to put parameter.")
+			panic("Failed to get parameter.")
 		}
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(putCmd)
+	rootCmd.AddCommand(getCmd)
 
-	putCmd.Flags().BoolVarP(&encrypt, "encrypt", "e", true, "Encrypt?  true/false.")
+	modifyCommandWithCommonParams(getCmd)
+}
 
-	modifyCommandWithCommonParams(putCmd)
-
-	const PARAM_VALUE = "param_value"
-	putCmd.Flags().StringVarP(&param_value, PARAM_VALUE, "v", "", "The value of the parameter")
-	putCmd.MarkFlagRequired(PARAM_VALUE)
-
-
+func modifyCommandWithCommonParams(cmd *cobra.Command) {
+	const PARAM_NAME = "param_name"
+	cmd.Flags().StringVarP(&param_name, PARAM_NAME, "n", "", "The name of the parameter")
+	cmd.MarkFlagRequired(PARAM_NAME)
 }
