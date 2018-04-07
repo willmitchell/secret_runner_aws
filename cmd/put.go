@@ -30,6 +30,9 @@ var param_value = ""
 var putCmd = &cobra.Command{
 	Use:   "put",
 	Short: "put secrets into SSM",
+	Long: `The put command can store your secrets in AWS SSM Parameter Store.  These parameters may optionally
+be encrypted by using the -e flag.
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println(fmt.Sprintf("put called.  name: %s, value: %s, encrypt: %t", param_name, param_value, encrypt))
 

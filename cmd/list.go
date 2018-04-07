@@ -26,6 +26,7 @@ import (
 var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "list secrets for this prefix/module/stage",
+	Long:`The list command shows you all of the names of the parameters in AWS SSM Parameter Store.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("list called")
 		sess := buildSession()

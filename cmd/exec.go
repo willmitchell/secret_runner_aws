@@ -63,6 +63,9 @@ func addParameter(p *ssm.Parameter) {
 var execCmd = &cobra.Command{
 	Use:   "exec",
 	Short: "Run your program with secrets exposed as env vars.",
+	Long: `The exec command runs your command with environment variables where the values are set using values stored
+in AWS SSM Parameter Store.  The values are decrypted using the default key within AWS KMS.
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("exec called")
 

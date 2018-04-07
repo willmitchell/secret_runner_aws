@@ -26,6 +26,8 @@ import (
 var getCmd = &cobra.Command{
 	Use:   "get",
 	Short: "Get secrets from SSM",
+	Long:`The get command can be used to show what parameters you have in AWS SSM Parameter Store.
+This can be useful when trying to figure out how the name/path hierarchy works in SSM PS.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println(fmt.Sprintf("get called.  name: %s, value: %st", param_name, param_value, ))
 
