@@ -14,7 +14,7 @@
 
 package main
 
-import "gitlab.com/willmitchell/ssm_executor/cmd"
+import "gitlab.com/willmitchell/secret_runner_aws/cmd"
 
 func main() {
 	cmd.Execute()

@@ -11,8 +11,8 @@ before_script:
   - echo $CI_PROJECT_DIR
   - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
   - mkdir -p /go/src/gitlab.com/willmitchell
-  - cp -rv /builds/willmitchell/ssm_executor /go/src/gitlab.com/willmitchell/
-  - cd /go/src/gitlab.com/willmitchell/ssm_executor
+  - cp -rv /builds/willmitchell/secret_runner_aws /go/src/gitlab.com/willmitchell/
+  - cd /go/src/gitlab.com/willmitchell/secret_runner_aws
 
 build:
   stage: build
@@ -32,13 +32,13 @@ deploy:
     - mkdir -p $CI_PROJECT_DIR/binaries
     - dep ensure
     - echo Building for Windows
-    - GOOS=windows GOARCH=amd64 go build -o $CI_PROJECT_DIR/binaries/ssm_executor_windows.exe
+    - GOOS=windows GOARCH=amd64 go build -o $CI_PROJECT_DIR/binaries/secret_runner_aws_windows.exe
     - echo Building for Linux
-    - GOOS=linux GOARCH=amd64 go build -o $CI_PROJECT_DIR/binaries/ssm_executor_linux
+    - GOOS=linux GOARCH=amd64 go build -o $CI_PROJECT_DIR/binaries/secret_runner_aws_linux
     - echo Building for Mac
-    - GOOS=darwin GOARCH=amd64 go build -o $CI_PROJECT_DIR/binaries/ssm_executor_mac
+    - GOOS=darwin GOARCH=amd64 go build -o $CI_PROJECT_DIR/binaries/secret_runner_aws_mac
   artifacts:
     paths:
-      - binaries/ssm_executor_windows.exe
-      - binaries/ssm_executor_linux
-      - binaries/ssm_executor_mac
+      - binaries/secret_runner_aws_windows.exe
+      - binaries/secret_runner_aws_linux
+      - binaries/secret_runner_aws_mac

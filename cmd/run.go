@@ -59,15 +59,15 @@ func addParameter(p *ssm.Parameter) {
 	nameMap = append(nameMap, nm)
 }
 
-// execCmd represents the exec command
+// execCmd represents the run command
 var execCmd = &cobra.Command{
-	Use:   "exec",
+	Use:   "run",
 	Short: "Run your program with secrets exposed as env vars.",
-	Long: `The exec command runs your command with environment variables where the values are set using values stored
+	Long: `The run command runs your command with environment variables where the values are set using values stored
 in AWS SSM Parameter Store.  The values are decrypted using the default key within AWS KMS.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("exec called")
+		fmt.Println("run called")
 
 		sess := buildSession()
 
@@ -102,7 +102,6 @@ in AWS SSM Parameter Store.  The values are decrypted using the default key with
 
 		dump()
 		fmt.Println("Command: ", command)
-		//bashCmd := fmt.Sprintf("/bin/bash -c '%v'",command)
 
 		osc := exec.Command("/bin/bash", "-c", command)
 		ne := os.Environ()

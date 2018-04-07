@@ -20,8 +20,8 @@ func buildSession() (*session.Session) {
 }
 
 //func streamline(s string) string {
-//	var re = regexp.MustCompile(`(^|[^_])\bproducts\b([^_]|$)`)
-//	return re.ReplaceAllString(s, `$1.$2`)
+//	var re = regexp.MustCompile(`(/+)`)
+//	return re.ReplaceAllString(s, `$1`,"/")
 //}
 
 func streamline(s string) string {
@@ -35,7 +35,8 @@ func buildModuleStageName(prefix string, module string, stage string) string {
 
 func getCurrentParamPath() string {
 	//return fmt.Sprintf("%v/*",buildModuleStageName(prefix, module, stage))
-	return buildModuleStageName(prefix, module, stage)
+	s:= buildModuleStageName(prefix, module, stage)
+	return streamline(s)
 }
 
 func getCurrentParamPathPlus() string {

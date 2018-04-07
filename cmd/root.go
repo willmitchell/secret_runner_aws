@@ -28,17 +28,17 @@ var stage = ""
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "ssm_executor",
+	Use:   "secret_runner_aws",
 	Short: "This program helps you run your own programs in a secure manner by passing secrets as env vars.",
 	Long:
 	`This program helps you use AWS SSM Parameter Store to manage your parameters and secrets.  These secrets are
 encrypted using master keys that are managed by AWS KMS.  The tool provides CRUD operations for params 
 and secrets, and it relies on a naming convention that maps onto existing AWS SSM PS IAM role management 
-facilities.  You can also use this program to run *your* program in a secure manner using the 'exec' command.
-The exec command exposes all appropriate secrets as environment variables and then execs your program.  
+facilities.  You can also use this program to run *your* program in a secure manner using the 'run' command.
+The run command exposes all appropriate secrets as environment variables and then execs your program.  
 
 Disclaimer:   Provided without warranty of any kind.  Use at your own risk.  
-Bug reports:  https://gitlab.com/willmitchell/ssm_executor/issues
+Bug reports:  https://gitlab.com/willmitchell/secret_runner_aws/issues
 Author:       will.mitchell@app3.com, 2018.
 `,
 
@@ -59,7 +59,7 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
-	//rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.ssm_executor.yaml)")
+	//rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.secret_runner_aws.yaml)")
 
 	const PREFIX = "prefix"
 	rootCmd.PersistentFlags().StringVarP(&prefix, PREFIX, "p", "", "prefix name", )
@@ -89,9 +89,9 @@ func initConfig() {
 	//	//	os.Exit(1)
 	//	//}
 	//
-	//	//// Search config in home directory with name ".ssm_executor" (without extension).
+	//	//// Search config in home directory with name ".secret_runner_aws" (without extension).
 	//	//viper.AddConfigPath(home)
-	//	//viper.SetConfigName(".ssm_executor")
+	//	//viper.SetConfigName(".secret_runner_aws")
 	//}
 	//
 	//viper.AutomaticEnv() // read in environment variables that match
