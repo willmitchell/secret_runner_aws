@@ -18,7 +18,41 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"github.com/aws/aws-sdk-go/service/ssm"
+	"github.com/aws/aws-sdk-go/aws"
+	"strings"
 )
+
+type NameMap struct {
+	secretName string
+	envName    string
+	value      string
+}
+
+func dump() {
+	for i := 0; i < len(nameMap); i++ {
+		m := nameMap[i]
+		fmt.Println(fmt.Sprintf("secretName: %v, envName: %v, value: %v", m.secretName, m.envName, m.value))
+	}
+}
+
+func makeEnvVarName(s string) string {
+	s = strings.Replace(s, "-", "_", -1)
+	s = strings.Replace(s, "/", "_", -1)
+	s = strings.ToUpper(s)
+	return s
+}
+
+var nameMap = []*NameMap{}
+
+func addParameter(p *ssm.Parameter) {
+	var nm = &NameMap{
+		secretName: aws.StringValue(p.Name),
+		envName:    makeEnvVarName(removeCurrentParamPath(aws.StringValue(p.Name))),
+		value:      aws.StringValue(p.Value),
+	}
+	nameMap = append(nameMap, nm)
+}
 
 // execCmd represents the exec command
 var execCmd = &cobra.Command{
@@ -26,19 +60,44 @@ var execCmd = &cobra.Command{
 	Short: "Run your program with secrets exposed as env vars.",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("exec called")
+
+		sess := buildSession()
+
+		// Create S3 service client
+
+		cpp := getCurrentParamPath()
+		fmt.Println(fmt.Sprintf("Current path: %v", cpp))
+
+		input := ssm.GetParametersByPathInput{
+			Path:           aws.String(cpp),
+			Recursive:      aws.Bool(true),
+			WithDecryption: aws.Bool(true),
+		}
+
+		svc := ssm.New(sess);
+		o, err := svc.GetParametersByPath(&input)
+		print(o.GoString())
+		if (err != nil) {
+			fmt.Println(err)
+			panic("Unable to get parameters by path")
+		}
+
+		params := o.Parameters
+		for i := 0; i < len(params); i++ {
+			p := params[i]
+			println(aws.StringValue(p.Name))
+			println(aws.StringValue(p.Value))
+			println(aws.StringValue(p.Type))
+			println(aws.Int64Value(p.Version))
+			addParameter(p)
+		}
+
+		dump()
+
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(execCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// execCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// execCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	execCmd.Flags().BoolP("verbose", "v", false, "Show runtime environment")
 }

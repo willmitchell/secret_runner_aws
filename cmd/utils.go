@@ -38,6 +38,14 @@ func getCurrentParamPath() string {
 	return buildModuleStageName(prefix, module, stage)
 }
 
+func getCurrentParamPathPlus() string {
+	return fmt.Sprintf("%v/",getCurrentParamPath())
+}
+
+func removeCurrentParamPath(s string) string {
+	return strings.Replace(s, getCurrentParamPathPlus(), "", -1)
+}
+
 func buildParamName(param string) string {
 	s := fmt.Sprintf("%s/%s", buildModuleStageName(prefix, module, stage), param)
 	return streamline(s)
