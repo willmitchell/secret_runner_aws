@@ -21,6 +21,8 @@ import (
 	"github.com/aws/aws-sdk-go/service/ssm"
 	"github.com/aws/aws-sdk-go/aws"
 	"strings"
+	"os/exec"
+	"os"
 )
 
 type NameMap struct {
@@ -44,6 +46,7 @@ func makeEnvVarName(s string) string {
 }
 
 var nameMap = []*NameMap{}
+var command = ""
 
 func addParameter(p *ssm.Parameter) {
 	var nm = &NameMap{
@@ -93,11 +96,27 @@ var execCmd = &cobra.Command{
 		}
 
 		dump()
+		fmt.Println("Command: ", command)
+		//bashCmd := fmt.Sprintf("/bin/bash -c '%v'",command)
 
+		osc := exec.Command("/bin/bash", "-c", command)
+		ne := os.Environ()
+		for _, cred := range nameMap {
+			ne = append(ne, fmt.Sprintf("%v=%v", cred.envName, cred.value))
+		}
+		osc.Env = ne
+
+		stdoutStderr, err := osc.CombinedOutput()
+		if err != nil {
+			fmt.Println(err)
+			panic(err)
+		}
+		fmt.Println(string(stdoutStderr[:]))
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(execCmd)
 	execCmd.Flags().BoolP("verbose", "v", false, "Show runtime environment")
+	execCmd.Flags().StringVarP(&command, "command", "c", "", "The command to run")
 }
