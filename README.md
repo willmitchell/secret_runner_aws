@@ -12,7 +12,8 @@ encrypts secrets using keys that are managed by AWS KMS.
 secret_runner_aws manages both secrets and regular string parameters.  The only difference between the two is that secrets
 are encrypted using the -e flag.  secret_runner_aws supports put, get, list, and delete operations (CRUD, basically) on secrets.
 
-All parameters managed by this tool follow a naming convention as described below:
+All parameters managed by this tool follow a naming convention as described below.  When modifying secrets, please 
+keep in mind the following convention.  Secrets can have long names if all of the below parameters are specified.
 
  /prefix/module/stage/param_name
  
@@ -24,9 +25,11 @@ where:
 | --module     | name of your software module             | no        | appserver   |
 | --stage      | name of stage (aka environment)          | no        | prod        |
 | --param_name | the actual name of a parameter or secret | yes       | db_pass     |
+
+If you do not need a hierarchy of secrets, then you can just skip the --prefix, --module, and --stage parameters.
  
 At runtime, secret_runner_aws will pull all secrets matching the path defined by /prefix/module/stage/ and then decrypt 
-as required.  All resulting params will be transformed into environment variables (upper cased and s/-/_/g;) that are 
+as required.  All parameters will be transformed into environment variables (upper cased and s/-/_/g) that are 
 then passed to your program.  This way, your program can have access to secrets without resorting to insecure hacks!
 
 # Dependencies
@@ -53,12 +56,6 @@ I created this tool because I needed something that was easy to deploy and use i
 # Usage
 
 Run the program with no parameters.  It will tell you how to use it.
-
-You generally use the tool with a long command line.  This was done because I wanted a tool with zero config files
-that works well in a Docker environment.  As a result, you will need to provide the prefix (-p), 
-module (-m), and stage (-s) parameters for commands like run, get, list, and put.  These parameters provide
-a context that is used to form a 'path' that is used for searching AWS SSM PS.  The path is basically just a 
-part of a parameter name in AWS SSM PS.
 
 ```
 This program helps you use AWS SSM Parameter Store to manage your parameters and secrets.  These secrets are
@@ -92,17 +89,32 @@ Flags:
 Use "secret_runner_aws [command] --help" for more information about a command.
 ```
 
-# Examples
-
-Store a secret:
+# Simple Example
 
 ```
-$ secret_runner_aws --prefix com-example -m mymodule -s prod put -n db_pass -v hello -e
-put called.  name: db_pass, value: hello, encrypt: true
+$ secret_runner_aws put -n hello -v world -e
+put called.  name: hello, value: world, encrypt: true
 {
   Version: 1
 }
 
+$ secret_runner_aws get -n hello
+Getting parameter: name: hello, computed path: /hello
+{
+  Parameter: {
+    Name: "/hello",
+    Type: "SecureString",
+    Value: "world",
+    Version: 1
+  }
+}
+$ secret_runner_aws delete -n hello
+Getting parameter: name: hello, computed path: /hello
+{
+
+}
+Parameter deleted
+$
 ```
 
 Get that secret:
@@ -123,6 +135,40 @@ Prove that we can run a subcommand and see the secret exposed as an env var:
 ```
 $ secret_runner_aws --prefix com-example -m mymodule -s prod run -c 'echo $DB_PASS'
 hello
+
+```
+
+# 'Enterprise' Example
+
+Store a secret:
+
+```
+$ secret_runner_aws --prefix com-example -m mymodule -s prod put -n db_pass -v 99hH888jkjasdkaasdf -e
+put called.  name: db_pass, value: 99hH888jkjasdkaasdf, encrypt: true
+{
+  Version: 1
+}
+
+```
+
+Get that secret:
+```
+$ secret_runner_aws --prefix com-example -m mymodule -s prod get -n db_pass
+get called.  name: db_pass, value: t
+{
+  Parameter: {
+    Name: "/com-example/mymodule/prod/db_pass",
+    Type: "SecureString",
+    Value: "99hH888jkjasdkaasdf",
+    Version: 1
+  }
+}
+```
+Prove that we can run a subcommand and see the secret exposed as an env var:
+
+```
+$ secret_runner_aws --prefix com-example -m mymodule -s prod run -c 'echo $DB_PASS'
+99hH888jkjasdkaasdf
 
 ```
 
