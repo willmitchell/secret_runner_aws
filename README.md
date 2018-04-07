@@ -35,9 +35,9 @@ behalf.
 
 # Motivation, Features
 
-I created this tool because I needed something that I can provide to my colleagues as a statically linked executable that can be used in a variety of contexts.  Key features:
+I created this tool because I needed something that was easy to deploy and use in a variety of contexts.  Key features:
 
- - promote best practices with secrets management (do not put secrets on disk, etc)
+ - promote best practices with secrets management on AWS
  - easy to include in a Docker image that you may run on AWS ECS (depends on IAM Roles)
  - easy to include on your EC2 instance that is running some third party service (depends on IAM Roles)
  - developers on any OS can download a binary without having to know anything about Golang

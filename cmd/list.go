@@ -28,10 +28,8 @@ var listCmd = &cobra.Command{
 	Short: "list secrets for this prefix/module/stage",
 	Long:`The list command shows you all of the names of the parameters in AWS SSM Parameter Store.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("list called")
+		fmt.Println("Listing parameters.")
 		sess := buildSession()
-
-		// Create S3 service client
 
 		cpp := getCurrentParamPath()
 		fmt.Println(fmt.Sprintf("Current path: %v", cpp))
@@ -49,7 +47,7 @@ var listCmd = &cobra.Command{
 		o, err := svc.DescribeParameters(&ssm.DescribeParametersInput{
 			ParameterFilters: filters,
 		})
-		print(o.GoString())
+		//print(o.GoString())
 		if (err != nil) {
 			fmt.Println(err)
 			panic("Unable to describe parameters")

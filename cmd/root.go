@@ -25,6 +25,7 @@ var cfgFile string
 var prefix = ""
 var module = ""
 var stage = ""
+var region = "us-east-1"
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -63,13 +64,16 @@ func init() {
 
 	const PREFIX = "prefix"
 	rootCmd.PersistentFlags().StringVarP(&prefix, PREFIX, "p", "", "prefix name", )
-	rootCmd.MarkFlagRequired(PREFIX)
+	//rootCmd.MarkFlagRequired(PREFIX)
 	const MODULE = "module"
 	rootCmd.PersistentFlags().StringVarP(&module, MODULE, "m", "", "Module name", )
-	rootCmd.MarkFlagRequired(MODULE)
+	//rootCmd.MarkFlagRequired(MODULE)
 	const STAGE = "stage"
 	rootCmd.PersistentFlags().StringVarP(&stage, STAGE, "s", "", "Stage name", )
-	rootCmd.MarkFlagRequired(STAGE)
+	//rootCmd.MarkFlagRequired(STAGE)
+
+	const REGION = "region"
+	rootCmd.PersistentFlags().StringVarP(&region, REGION, "r", region, "AWS region name (us-east-1)", )
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -95,6 +99,7 @@ func initConfig() {
 	//}
 	//
 	//viper.AutomaticEnv() // read in environment variables that match
+	//viper.SetEnvPrefix("sra") // read in environment variables that match
 	//
 	//// If a config file is found, read it in.
 	//if err := viper.ReadInConfig(); err == nil {

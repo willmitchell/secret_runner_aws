@@ -5,27 +5,22 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"fmt"
 	"strings"
+	"regexp"
 )
 
 func buildSession() (*session.Session) {
-	// Initialize a session in us-west-2 that the SDK will use to load
-	// credentials from the shared credentials file ~/.aws/credentials.
 	sess, err := session.NewSession(&aws.Config{
-		Region: aws.String("us-east-1")},
+		Region: aws.String(region)},
 	)
 	if (err != nil) {
-		panic("Unable to describe parameters")
+		panic("Unable to build Session.  Check your AWS credentials.")
 	}
 	return sess
 }
 
-//func streamline(s string) string {
-//	var re = regexp.MustCompile(`(/+)`)
-//	return re.ReplaceAllString(s, `$1`,"/")
-//}
-
 func streamline(s string) string {
-	return strings.Replace(s, "//", "/", -1)
+	var re = regexp.MustCompile(`/+`)
+	return re.ReplaceAllString(s,"/")
 }
 
 func buildModuleStageName(prefix string, module string, stage string) string {
