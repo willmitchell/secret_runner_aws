@@ -4,9 +4,8 @@
 [![coverage report](https://gitlab.com/willmitchell/ssm_executor/badges/master/coverage.svg)](https://gitlab.com/willmitchell/ssm_executor/commits/master)
 
 
-You can use this tool to manage and load secrets for other programs that you run.
-This program pulls secrets from SSM, which can encrypt secrets using the AWS KMS.
-Secrets are pulled from KMS based on a parameter naming convention:
+You can use this tool to manage secrets for other programs that you run on AWS.
+This program manages secrets within AWS SSM Parameter Store, encrypts secrets using KMS.
 
 Parameter naming convention:
 
