@@ -1,4 +1,4 @@
-# ssm_executor: Secure secret delivery to arbitrary programs using AWS SSM Parameter Store and KMS
+# ssm_executor: Opinionated secrets management tool for AWS.
 
 [![pipeline status](https://gitlab.com/willmitchell/ssm_executor/badges/master/pipeline.svg)](https://gitlab.com/willmitchell/ssm_executor/commits/master)
 [![coverage report](https://gitlab.com/willmitchell/ssm_executor/badges/master/coverage.svg)](https://gitlab.com/willmitchell/ssm_executor/commits/master)
