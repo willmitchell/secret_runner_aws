@@ -3,7 +3,7 @@
 [![pipeline status](https://gitlab.com/willmitchell/secret_runner_aws/badges/master/pipeline.svg)](https://gitlab.com/willmitchell/secret_runner_aws/commits/master)
 [![coverage report](https://gitlab.com/willmitchell/secret_runner_aws/badges/master/coverage.svg)](https://gitlab.com/willmitchell/secret_runner_aws/commits/master)
 
-[Download](https://gitlab.com/willmitchell/formflow/-/jobs/artifacts/master/browse?job=deploy)
+[Download](https://gitlab.com/willmitchell/secret_runner_aws/-/jobs/artifacts/master/browse?job=deploy)
 
 You can use this tool to manage secrets and to deliver them to your own programs as environment variables.  The tool is designed 
 to follow best practices with regards to secrets handling on AWS.  Secrets are managed within AWS SSM Parameter Store, which 
