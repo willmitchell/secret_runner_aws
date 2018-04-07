@@ -5,7 +5,7 @@
 
 
 You can use this tool to manage secrets for other programs that you run on AWS.
-This program manages secrets within AWS SSM Parameter Store, encrypts secrets using KMS.
+This program manages secrets within AWS SSM Parameter Store, which encrypts secrets using KMS.
 
 Parameter naming convention:
 
