@@ -123,6 +123,6 @@ var verbose = false
 
 func init() {
 	rootCmd.AddCommand(execCmd)
-	execCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Show runtime environment")
+	execCmd.Flags().BoolVarP(&verbose, "verbose", "", false, "Show runtime environment")
 	execCmd.Flags().StringVarP(&command, "command", "c", "", "The command to run")
 }
