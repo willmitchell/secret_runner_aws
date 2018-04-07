@@ -3,6 +3,8 @@
 [![pipeline status](https://gitlab.com/willmitchell/secret_runner_aws/badges/master/pipeline.svg)](https://gitlab.com/willmitchell/secret_runner_aws/commits/master)
 [![coverage report](https://gitlab.com/willmitchell/secret_runner_aws/badges/master/coverage.svg)](https://gitlab.com/willmitchell/secret_runner_aws/commits/master)
 
+[Download](https://gitlab.com/willmitchell/formflow/-/jobs/artifacts/master/browse?job=deploy)
+
 You can use this tool to manage secrets and to run your own programs in a secure manner on AWS.  This program manages secrets within
 AWS SSM Parameter Store, which encrypts secrets using KMS.
 
@@ -15,11 +17,14 @@ where:
 - prefix: your company name. Example: com-example
 - module: name of your module. Example: appserver
 - stage: name of your runtime environment or stage.  Example: prod
--  param_name: name of a specific parameter.  Example: db_pass
+- param_name: name of a specific parameter.  Example: db_pass
  
 secret_runner_aws will pull all secrets matching the path defined by /prefix/module/stage/* and then decrypt as required.
 All resulting params will be transformed into environment variables that are then passed to your program.  This way,
 your program can have access to secrets without resorting to insecure hacks!
+
+secret_runner_aws also includes support for creating, updating, and reading the secrets that you want SSM to manage on your
+behalf.
 
 # Dependencies
 
@@ -27,6 +32,15 @@ your program can have access to secrets without resorting to insecure hacks!
 - [AWS KMS](https://aws.amazon.com/kms/)
 - [Cobra CLI](https://github.com/spf13/cobra)
 - [AWS Go SDK v1.x](https://docs.aws.amazon.com/sdk-for-go/api/)
+
+# Motivation, Features
+
+I created this tool because I needed something that I can provide to my colleagues as a statically linked executable that can be used in a variety of contexts.  Key features:
+
+ - promote best practices with secrets management (do not put secrets on disk, etc)
+ - easy to include in a Docker image that you may run on AWS ECS (depends on IAM Roles)
+ - easy to include on your EC2 instance that is running some third party service (depends on IAM Roles)
+ - developers on any OS can download a binary without having to know anything about Golang
 
 # Prior art
 
@@ -103,8 +117,8 @@ get called.  name: db_pass, value: t
 Prove that we can run a subcommand and see the secret exposed as an env var:
 
 ```
-$ secret_runner_aws --prefix com-example -m mymodule -s prod run -c 'env' | grep DB_PASS
-DB_PASS=hello
+$ secret_runner_aws --prefix com-example -m mymodule -s prod run -c 'echo $DB_PASS'
+hello
 
 ```
 
