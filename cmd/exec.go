@@ -34,7 +34,9 @@ type NameMap struct {
 func dump() {
 	for i := 0; i < len(nameMap); i++ {
 		m := nameMap[i]
-		fmt.Println(fmt.Sprintf("secretName: %v, envName: %v, value: %v", m.secretName, m.envName, m.value))
+		if verbose {
+			fmt.Println(fmt.Sprintf("secretName: %v, envName: %v, value: %v", m.secretName, m.envName, m.value))
+		}
 	}
 }
 
@@ -79,7 +81,7 @@ var execCmd = &cobra.Command{
 
 		svc := ssm.New(sess);
 		o, err := svc.GetParametersByPath(&input)
-		print(o.GoString())
+		//print(o.GoString())
 		if (err != nil) {
 			fmt.Println(err)
 			panic("Unable to get parameters by path")
@@ -88,10 +90,10 @@ var execCmd = &cobra.Command{
 		params := o.Parameters
 		for i := 0; i < len(params); i++ {
 			p := params[i]
-			println(aws.StringValue(p.Name))
-			println(aws.StringValue(p.Value))
-			println(aws.StringValue(p.Type))
-			println(aws.Int64Value(p.Version))
+			//println(aws.StringValue(p.Name))
+			//println(aws.StringValue(p.Value))
+			//println(aws.StringValue(p.Type))
+			//println(aws.Int64Value(p.Version))
 			addParameter(p)
 		}
 
@@ -105,6 +107,7 @@ var execCmd = &cobra.Command{
 			ne = append(ne, fmt.Sprintf("%v=%v", cred.envName, cred.value))
 		}
 		osc.Env = ne
+		fmt.Println("Running command via bash: ", command)
 
 		stdoutStderr, err := osc.CombinedOutput()
 		if err != nil {
@@ -114,9 +117,10 @@ var execCmd = &cobra.Command{
 		fmt.Println(string(stdoutStderr[:]))
 	},
 }
+var verbose = false
 
 func init() {
 	rootCmd.AddCommand(execCmd)
-	execCmd.Flags().BoolP("verbose", "v", false, "Show runtime environment")
+	execCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Show runtime environment")
 	execCmd.Flags().StringVarP(&command, "command", "c", "", "The command to run")
 }
