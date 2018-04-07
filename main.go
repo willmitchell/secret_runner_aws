@@ -14,8 +14,14 @@
 
 package main
 
-import "gitlab.com/willmitchell/secret_runner_aws/cmd"
+import (
+	"gitlab.com/willmitchell/secret_runner_aws/cmd"
+	"fmt"
+)
+
+var version = "undefined"
 
 func main() {
+	fmt.Printf("secret_runner_aws: version: %s\n", version)
 	cmd.Execute()
 }
