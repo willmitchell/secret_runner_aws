@@ -32,11 +32,11 @@ deploy:
     - mkdir -p $CI_PROJECT_DIR/binaries
     - dep ensure
     - echo Building for Windows
-    - GOOS=windows GOARCH=amd64 go build -ldflags="-X main.version=$(git describe --always --long --dirty)" -o $CI_PROJECT_DIR/binaries/secret_runner_aws_windows.exe
+    - GOOS=windows GOARCH=amd64 go build -ldflags="-X main.version=$(git describe --always)" -o $CI_PROJECT_DIR/binaries/secret_runner_aws_windows.exe
     - echo Building for Linux
-    - GOOS=linux GOARCH=amd64 go build -ldflags="-X main.version=$(git describe --always --long --dirty)" -o $CI_PROJECT_DIR/binaries/secret_runner_aws_linux
+    - GOOS=linux GOARCH=amd64 go build -ldflags="-X main.version=$(git describe --always)" -o $CI_PROJECT_DIR/binaries/secret_runner_aws_linux
     - echo Building for Mac
-    - GOOS=darwin GOARCH=amd64 go build -ldflags="-X main.version=$(git describe --always --long --dirty)" -o $CI_PROJECT_DIR/binaries/secret_runner_aws_mac
+    - GOOS=darwin GOARCH=amd64 go build -ldflags="-X main.version=$(git describe --always)" -o $CI_PROJECT_DIR/binaries/secret_runner_aws_mac
   artifacts:
     paths:
       - binaries/secret_runner_aws_windows.exe
