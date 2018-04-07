@@ -21,7 +21,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var cfgFile string
+//var cfgFile string
 var prefix = ""
 var module = ""
 var stage = ""
@@ -32,7 +32,8 @@ var rootCmd = &cobra.Command{
 	Use:   "secret_runner_aws",
 	Short: "This program helps you run your own programs in a secure manner by passing secrets as env vars.",
 	Long:
-	`This program helps you use AWS SSM Parameter Store to manage your parameters and secrets.  These secrets are
+	`
+This program helps you use AWS SSM Parameter Store to manage your parameters and secrets.  These secrets are
 encrypted using master keys that are managed by AWS KMS.  The tool provides CRUD operations for params 
 and secrets, and it relies on a naming convention that maps onto existing AWS SSM PS IAM role management 
 facilities.  You can also use this program to run *your* program in a secure manner using the 'run' command.
@@ -42,7 +43,6 @@ Disclaimer:   Provided without warranty of any kind.  Use at your own risk.
 Bug reports:  https://gitlab.com/willmitchell/secret_runner_aws/issues
 Author:       will.mitchell@app3.com, 2018.
 `,
-
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
