@@ -35,14 +35,20 @@ This can be useful when trying to figure out how the name/path hierarchy works i
 
 		svc := ssm.New(sess);
 		name := buildParamName(param_name)
-		fmt.Println(fmt.Sprintf("Getting parameter: name: %s, computed path: %s", param_name, name))
+		if !Raw_output{
+			fmt.Println(fmt.Sprintf("Getting parameter: name: %s, computed path: %s", param_name, name))
+		}
 		pi := ssm.GetParameterInput{
 			Name:      aws.String(name),
 			WithDecryption: aws.Bool(true),
 		}
 
 		o, err := svc.GetParameter(&pi)
-		fmt.Println(o.GoString())
+		if !Raw_output{
+			fmt.Print(o.GoString())
+		} else {
+			fmt.Println(aws.StringValue(o.Parameter.Value))
+		}
 		if (err != nil) {
 			fmt.Println("Failed to get parameter.",err)
 			os.Exit(-1)
@@ -56,8 +62,12 @@ func init() {
 	modifyCommandWithCommonParams(getCmd)
 }
 
+var Raw_output = false
+
 func modifyCommandWithCommonParams(cmd *cobra.Command) {
 	const PARAM_NAME = "param_name"
 	cmd.Flags().StringVarP(&param_name, PARAM_NAME, "n", "", "The name of the parameter")
 	cmd.MarkFlagRequired(PARAM_NAME)
+	const RAW_OUTPUT = "raw_output"
+	cmd.Flags().BoolVarP(&Raw_output, RAW_OUTPUT, "", false, "Provide secret output in raw format")
 }
